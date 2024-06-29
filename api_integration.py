@@ -13,7 +13,7 @@ def search_by_muscle(muscle):
     api_url = general_api_url + f"?muscle={muscle}"
     response = requests.get(api_url,headers={'X-Api-Key': api_key})
     json = response.json() #keys: name, type, muscle, equipment, difficulty, instructions
-    if len(json) == 0:
+    if len(json) == 0: #If there is nothing returned, search was unsuccessful
         print("Nothing found...Error")
         return -1
     return json
