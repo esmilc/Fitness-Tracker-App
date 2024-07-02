@@ -4,7 +4,7 @@ from workout import Workout
 db_file = 'fitness_tracker.db'
 def init_db():
     conn = sqlite3.connect(db_file)    #Makes the connection, first step for a database
-    c = conn.cursor()   #Curser is always Next
+    c = conn.cursor()   #Cursor is always Next
     c.execute(""" CREATE TABLE IF NOT EXISTS workouts( 
               name TEXT NOT NULL, 
               main_muscle TEXT NOT NULL,

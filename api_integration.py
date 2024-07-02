@@ -1,11 +1,14 @@
 import requests
+import os
+from dotenv import load_dotenv
 
 muscle_query = []
 
 general_api_url = "https://api.api-ninjas.com/v1/exercises"
-api_key = "grgT+iQNzkUc0qgYpHa6nw==viiFK2Zn3Tbo3U05"
+load_dotenv()
+api_key = os.getenv("FITNESS_API_KEY")
 
-# response = requests.get(general_api_url, headers={'X-Api-Key': 'grgT+iQNzkUc0qgYpHa6nw==viiFK2Zn3Tbo3U05'}) #last number is 5
+# response = requests.get(general_api_url, headers={'X-Api-Key': 'API KEY'}) #last number is 5
 # if response.status_code != 200:
 #     print("UNSUCCESSFULL API Launch")
 
@@ -28,9 +31,9 @@ def search_by_name(name):
     return json
 
 
-
-
-search_by_name('hammer') #Testing the input
+if __name__ == "__main__":
+    search_by_name('hammer') #Testing the input
+    print(api_key)
 
 
 
