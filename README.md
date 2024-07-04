@@ -1,6 +1,7 @@
 # Fitness-Tracker-App
 
 1) Work on the database
+2) Never store API key in the code
 
 Ideas for Logic:
 - User adds workouts that gets pushed into database right there, but include a delete feature
@@ -11,5 +12,4 @@ Ideas for Logic:
 - look into JSON values
 - foreign keys (for user)
 - .gitignore
-- NEVER STORE API KEY
-- 
+- Try leaving data base last
