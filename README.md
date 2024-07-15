@@ -13,3 +13,4 @@ Ideas for Logic:
 - foreign keys (for user)
 - .gitignore
 - Try leaving data base last
+- Implement Try Except for Data Validation

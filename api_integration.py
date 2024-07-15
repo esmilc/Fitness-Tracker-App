@@ -32,8 +32,7 @@ def search_by_name(name):
 
 
 if __name__ == "__main__":
-    search_by_name('hammer') #Testing the input
-    print(api_key)
+    print(search_by_name('hammer'))
 
 
 
