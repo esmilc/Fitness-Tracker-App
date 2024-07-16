@@ -32,7 +32,7 @@ def search_by_name(name):
 
 
 if __name__ == "__main__":
-    print(search_by_name('hammer'))
+    print(search_by_muscle('triceps'))
 
 
 

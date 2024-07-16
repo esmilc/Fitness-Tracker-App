@@ -13,6 +13,9 @@ class Workout:
     def setDifficulty(self, difficulty):
         self.difficulty = difficulty
     def setInstructions(self, instructions):
+        if instructions == "":
+            self.instructions = "Instructions are not supported for this workout at this time."
+            return
         self.instructions = instructions
 
 
