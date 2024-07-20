@@ -14,3 +14,6 @@ Ideas for Logic:
 - .gitignore
 - Try leaving data base last
 - Implement Try Except for Data Validation
+
+Notes to self:
+- Add data validation for input when workout list is shown

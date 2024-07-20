@@ -6,6 +6,10 @@ def validate_1_or_2(input):
     if input != "1" and input != "2":
         raise click.BadParameter("Value not valid. Please enter 1 or 2.")
     return int(input)
+def validate_digit(input):
+    if input.isdigit():
+        return int(input)
+    raise click.BadParameter("Value not valid. Please enter a digit.")
 
 def print_instructions(workouts, index_str):
     try:
@@ -15,6 +19,13 @@ def print_instructions(workouts, index_str):
         click.echo("------END OF INSTRUCTIONS-------\n")
     except ValueError:
         click.echo("ERROR...Please only type an Integer")
+def list_workouts(list_of_workouts):
+    count = 1
+    for workout in list_of_workouts:
+        click.echo(f"Workout #{count}:")
+        click.echo(f"Name: {workout.name}\nDifficulty: {workout.difficulty}")
+        click.echo(f"Muscle Group Trained: {workout.muscle}\n\n")
+        count += 1
 
 
 @click.group()
@@ -43,12 +54,7 @@ def search_workout(name, muscle_group, difficulty):
 
         workouts = json_to_list(workoutsJSON) #Workouts is a list of workout instances
         click.echo()
-        count = 1
-        for workout in workouts :
-            click.echo(f"Workout #{count}:")
-            click.echo(f"Name: {workout.name}\nDifficulty: {workout.difficulty}")
-            click.echo(f"Muscle Group Trained: {workout.muscle}\n\n")
-            count +=1
+        list_workouts(workouts)
         while instructions:
             instructions = click.prompt("Would you like to see instructions to a specific workout? (y/n)")
             if instructions != 'y' and instructions != "n":
@@ -93,12 +99,7 @@ def search_workout(name, muscle_group, difficulty):
             click.echo("ERROR: No workouts that match that criteria found. Please modify search parameters.")
             return
         click.echo()
-        count = 1
-        for workout in filteredWorkouts:
-            click.echo(f"Workout #{count}:")
-            click.echo(f"Name: {workout.name}\nDifficulty: {workout.difficulty}")
-            click.echo(f"Muscle Group Trained: {workout.muscle}\n\n")
-            count += 1
+        list_workouts(filteredWorkouts)
         while instructions:
             instructions = click.prompt("Would you like to see instructions to a specific workout? (y/n)")
             if instructions != 'y' and instructions != "n":
@@ -136,16 +137,11 @@ def search_workout(name, muscle_group, difficulty):
         for i in allWorkouts:
             if i.difficulty == difficulty:
                 filteredWorkouts.append(i)
-        count = 1
         if len(filteredWorkouts) == 0:
             click.echo("ERROR: No workouts that match that criteria found. Please modify search parameters.")
             return
         click.echo()
-        for workout in filteredWorkouts:
-            click.echo(f"Workout #{count}:")
-            click.echo(f"Name: {workout.name}\nDifficulty: {workout.difficulty}")
-            click.echo(f"Muscle Group Trained: {workout.muscle}\n\n")
-            count += 1
+        list_workouts(filteredWorkouts)
         while instructions:
             instructions = click.prompt("Would you like to see instructions to a specific workout? (y/n)")
             if instructions != 'y' and instructions != "n":
@@ -186,16 +182,11 @@ def search_workout(name, muscle_group, difficulty):
         for i in allWorkouts:
             if i.difficulty == difficulty:
                 filteredWorkouts.append(i)
-        count = 1
         if len(filteredWorkouts) == 0:
             click.echo("ERROR: No workouts that match that criteria found. Please modify search parameters.")
             return
         click.echo()
-        for workout in filteredWorkouts:
-            click.echo(f"Workout #{count}:")
-            click.echo(f"Name: {workout.name}\nDifficulty: {workout.difficulty}")
-            click.echo(f"Muscle Group Trained: {workout.muscle}\n\n")
-            count += 1
+        list_workouts(filteredWorkouts)
         while instructions:
             instructions = click.prompt("Would you like to see instructions to a specific workout? (y/n)")
             if instructions != 'y' and instructions != "n":
@@ -221,12 +212,7 @@ def search_workout(name, muscle_group, difficulty):
 
             workouts = json_to_list(workoutsJSON)  # Workouts is a list of workout instances
             click.echo()
-            count = 1
-            for workout in workouts:
-                click.echo(f"Workout #{count}:")
-                click.echo(f"Name: {workout.name}\nDifficulty: {workout.difficulty}")
-                click.echo(f"Muscle Group Trained: {workout.muscle}\n\n")
-                count += 1
+            list_workouts(workouts)
             while instructions:
                 instructions = click.prompt("Would you like to see instructions to a specific workout? (y/n)")
                 if instructions != 'y' and instructions != "n":
@@ -264,16 +250,11 @@ def search_workout(name, muscle_group, difficulty):
             for i in allWorkouts:
                 if i.difficulty == difficulty:
                     filteredWorkouts.append(i)
-            count = 1
             if len(filteredWorkouts) == 0:
                 click.echo("ERROR: No workouts that match that criteria found. Please modify search parameters.")
                 return
             click.echo()
-            for workout in filteredWorkouts:
-                click.echo(f"Workout #{count}:")
-                click.echo(f"Name: {workout.name}\nDifficulty: {workout.difficulty}")
-                click.echo(f"Muscle Group Trained: {workout.muscle}\n\n")
-                count += 1
+            list_workouts(filteredWorkouts)
             while instructions:
                 instructions = click.prompt("Would you like to see instructions to a specific workout? (y/n)")
                 if instructions != 'y' and instructions != "n":
@@ -285,6 +266,32 @@ def search_workout(name, muscle_group, difficulty):
                     index_str = click.prompt("Enter the # of the workout ")
                     print_instructions(filteredWorkouts, index_str)
         #Nothing was given, ask what type of search and do search
+
+@cli.command()
+@click.option("--name", "--n", help="Enter the  name of the workout, if looking for workouts, use 'search-workout' function.")
+def log_workout(name):
+    if not name:
+        name = click.prompt("Enter name of workout to log")
+    workouts = search_by_name(name)
+    try:
+        workouts = json_to_list(workouts)
+    except:
+        print("Hey")
+    print(workouts)
+    if workouts == -1:
+        click.echo("ERROR: No Workout was found, please check name inputted")
+    else:
+        list_workouts(workouts)
+        index = click.prompt("Enter the # of the workout you'd like to log",value_proc=validate_digit)
+        if not 0 < index < len(workouts):
+            click.echo("Number invalid...Try again")
+            return
+        toAdd = workouts[index-1]
+        print(toAdd.name)
+
+
+
+
 
 
 
