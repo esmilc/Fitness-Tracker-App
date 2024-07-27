@@ -10,7 +10,6 @@ def validate_digit(input):
     if input.isdigit():
         return int(input)
     raise click.BadParameter("Value not valid. Please enter a digit.")
-
 def print_instructions(workouts, index_str):
     try:
         index = int(index_str) - 1
