@@ -5,6 +5,8 @@ class Workout:
         self.muscle = None
         self.diffuculty = None
         self.instructions = None
+        self.sets = None
+        self.weight = None
 
     def setName(self, name):
         self.name = name

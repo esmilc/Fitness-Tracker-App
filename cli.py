@@ -1,6 +1,7 @@
 import click
 from workout import *
 from api_integration import search_by_name, search_by_muscle
+from database import add_db, clear_workouts
 
 def validate_1_or_2(input):
     if input != "1" and input != "2":
@@ -265,7 +266,6 @@ def search_workout(name, muscle_group, difficulty):
                     index_str = click.prompt("Enter the # of the workout ")
                     print_instructions(filteredWorkouts, index_str)
         #Nothing was given, ask what type of search and do search
-
 @cli.command()
 @click.option("--name", "--n", help="Enter the  name of the workout, if looking for workouts, use 'search-workout' function.")
 def log_workout(name):
@@ -286,9 +286,20 @@ def log_workout(name):
             click.echo("Number invalid...Try again")
             return
         toAdd = workouts[index-1]
+        sets = click.prompt("Enter amount of sets", value_proc=validate_digit)
+        weight = click.prompt("Enter amount of weight", value_proc=validate_digit)
+        toAdd.sets = sets
+        toAdd.weight = weight
+        #ADD TO DAtABASE
+        add_db(toAdd)
+        click.echo("ADDED")
+
+
         print(toAdd.name)
 
-
+@cli.command() #This is a temporary command, meant to make development easier
+def clear_workouts():
+    clear_workouts()
 
 
 
