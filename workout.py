@@ -34,3 +34,13 @@ def json_to_list(json):
         toReturn.append(toAdd)
     return toReturn
 
+def query_formatting(query):
+    workouts = []
+    for entry in query:
+        toAdd = Workout()
+        toAdd.setName(entry[0])
+        toAdd.setMuscle(entry[1])
+        toAdd.sets = entry[2]
+        toAdd.weight = entry[3]
+        workouts.append(toAdd)
+    return workouts

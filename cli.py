@@ -1,12 +1,28 @@
 import click
 from workout import *
 from api_integration import search_by_name, search_by_muscle
-from database import add_db, clear_workouts
+from database import *
 
+bold_start = "\033[1m"
+bold_end = "\033[0m"
+
+def print_log(list_of_workouts):
+    count = 1
+    click.echo("\n\n")
+    for workout in list_of_workouts:
+        click.echo(f"{count}){bold_start}{workout.name}{bold_end}")
+        click.echo(f"  Muscle Group Trained: {workout.muscle}")
+        click.echo(f"  You did {workout.sets} sets of {workout.weight} lbs per rep.\n\n")
+        count += 1
 def validate_1_or_2(input):
     if input != "1" and input != "2":
         raise click.BadParameter("Value not valid. Please enter 1 or 2.")
     return int(input)
+
+def validate_y_or_n(input):
+    if input != "y" and input != "n":
+        raise click.BadParameter("Value not valid. Please enter y or n.")
+    return (input)
 def validate_digit(input):
     if input.isdigit():
         return int(input)
@@ -36,7 +52,7 @@ def cli():
 @cli.command()
 @click.option("--name", '--n', prompt="Enter your name", help="Please enter your name into the test command")
 def test_command(name):
-    click.echo(f"Welcome! {name}")
+    click.echo(f"Welcome {name}")
 
 @cli.command()
 @click.option("--muscle_group", "--mg", help="The muscle group to search for, please include intensity too.")
@@ -276,13 +292,12 @@ def log_workout(name):
         workouts = json_to_list(workouts)
     except:
         print("Hey")
-    print(workouts)
     if workouts == -1:
         click.echo("ERROR: No Workout was found, please check name inputted")
     else:
         list_workouts(workouts)
         index = click.prompt("Enter the # of the workout you'd like to log",value_proc=validate_digit)
-        if not 0 < index < len(workouts):
+        if not 0 < index <= len(workouts):
             click.echo("Number invalid...Try again")
             return
         toAdd = workouts[index-1]
@@ -290,22 +305,40 @@ def log_workout(name):
         weight = click.prompt("Enter amount of weight", value_proc=validate_digit)
         toAdd.sets = sets
         toAdd.weight = weight
-        #ADD TO DAtABASE
-        add_db(toAdd)
-        click.echo("ADDED")
-
-
-        print(toAdd.name)
+        fname = click.prompt("Enter your first name")
+        lname = click.prompt("Enter your last name")
+        user_id = get_key(fname,lname)
+        if user_id == -1:
+            cont = click.prompt(f"No user was found with those parameters. Would you like to create a user acount as {fname} {lname}? (y/n)", value_proc=validate_y_or_n)
+            if cont == 'y':
+                add_user(fname,lname)
+                user_id = get_key(fname,lname)
+            else:
+                click.echo("Goodbye!")
+                return
+        #ADD TO DATABASE
+        add_db(toAdd, user_id)
+        click.echo(f"\nSuccessfully added {toAdd.name} to the database. See you soon {fname}!\n\n")
 
 @cli.command() #This is a temporary command, meant to make development easier
-def clear_workouts():
-    clear_workouts()
+def search_log():
+    fname = click.prompt("Enter the first name")
+    lname = click.prompt("Enter the last name")
+    query = query_user(fname,lname)
+    if query == -1:
+        click.echo("User not found with those parameters, try again")
+        return
+    query = query_formatting(query)
+    print_log(query)
+
+
+@cli.command()
+def delete_database():
+    purge_db()
 
 
 
 
 
-cli.add_command(test_command)
-cli.add_command(search_workout)
 
 #Argument is mandatory while option is optional
