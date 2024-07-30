@@ -336,11 +336,14 @@ def log_workout(name):
 
 @cli.command() #This is a temporary command, meant to make development easier
 def search_log():
-    fname = click.prompt("Enter the username")
-    lname = click.prompt("Enter password", hide_input=True)
+    fname = click.prompt("Enter your username")
+    lname = click.prompt("Enter your password", hide_input=True)
     query = query_user(fname,lname)
     if query == -1:
         click.echo("User not found with those parameters, try again")
+        return
+    if query == -2:
+        click.echo("Username and password combination is incorrect, try again!")
         return
     query = query_formatting(query)
     print_log(query)

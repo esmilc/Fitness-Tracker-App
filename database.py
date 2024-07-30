@@ -1,7 +1,6 @@
 import sqlite3
 import os
 import bcrypt
-from workout import Workout
 
 db_file = 'fitness_tracker.db'
 def init_workouts_db():
@@ -45,17 +44,6 @@ def purge_db():
     if os.path.exists(db_file):
         os.remove(db_file)
         print('DATABASE WAS SUCCESSFULLY DELETED')
-    #
-    # conn = sqlite3.connect(db_file)
-    # c = conn.cursor()
-    # c.execute('''DELETE FROM workouts''')
-    # c.execute('''DELETE FROM users''')
-    # conn.commit()
-    # conn.close()
-    # 
-
-
-
 
 
 def user_exist(username):
@@ -100,6 +88,8 @@ def query_user(user, passw):
     id = get_key(user,passw)
     if id == -1:
         return -1
+    if id == -2:
+        return -2
 
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
@@ -108,13 +98,3 @@ def query_user(user, passw):
     all = c.fetchall()
     conn.close()
     return all
-
-
-
-# conn = sqlite3.connect(db_file)
-# c = conn.cursor()
-# c.execute("SELECT * FROM users")
-# rows = c.fetchall()
-# for row in rows:
-#     print(row)
-# print(get_key('ecanet', "1234"))
