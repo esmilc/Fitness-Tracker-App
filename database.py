@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import bcrypt
 from workout import Workout
 
 db_file = 'fitness_tracker.db'
@@ -26,10 +27,9 @@ def init_users_db():
     c = conn.cursor()
     c.execute(""" CREATE TABLE IF NOT EXISTS users(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            first_name TEXT NOT NULL,
-            last_name TEXT NOT NULL,
-            UNIQUE(first_name, last_name)
-            )
+            username TEXT NOT NULL,
+            password TEXT NOT NULL,
+            UNIQUE(username))
             """)
     conn.commit()
     conn.close()
@@ -55,42 +55,49 @@ def purge_db():
     # 
 
 
-def add_user(frst_name, lst_name):
-    conn = sqlite3.connect(db_file)
-    c = conn.cursor()
-    try:
-        c.execute('''INSERT INTO users(first_name, last_name) VALUES(?,?)''', (frst_name, lst_name))
-    except sqlite3.IntegrityError as e:
-        conn.commit()
-        conn.close()
-        return -1
-    conn.commit()
-    conn.close()
 
-def user_exist(frst_name, last_name):
+
+
+def user_exist(username):
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
     c.execute('''SELECT COUNT(*) FROM users
-                WHERE first_name = ? AND last_name = ?
-                ''', (frst_name,last_name))
+                WHERE username = ?
+                ''', (username,))
     count = c.fetchone()[0]
     conn.commit()
     conn.close()
     return count == 1
 
-def get_key(frst_name, lst_name): #This is going to be the mother function...look for user, if not exists prompt user then add the user
+def create_user(username, password):
+    if user_exist(username):
+        return -1
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
-    if user_exist(frst_name,lst_name):
+    encoded_pass = password.encode('utf-8')
+    hashed = bcrypt.hashpw(encoded_pass, bcrypt.gensalt())
+    c.execute('''INSERT INTO users(username, password) VALUES (?,?)''', (username, hashed))
+    conn.commit()
+    conn.close()
+
+def get_key(username, password): #This is going to be the mother function...look for user, if not exists prompt user then add the user
+    enc_password = password.encode('utf-8')
+    conn = sqlite3.connect(db_file)
+    c = conn.cursor()
+    if user_exist(username):
         c.execute('''SELECT * FROM users
-        WHERE first_name = ? AND last_name = ?
-        ''', (frst_name,lst_name))
-        return c.fetchone()[0]
+        WHERE username = ?''', (username,))
+        row = c.fetchone()
+        if bcrypt.checkpw(enc_password, row[2]):
+            return row[0]
+        conn.close()
+        return -2
     else:
+        conn.close()
         return -1
 
-def query_user(frstname, lstname):
-    id = get_key(frstname,lstname)
+def query_user(user, passw):
+    id = get_key(user,passw)
     if id == -1:
         return -1
 
@@ -106,8 +113,8 @@ def query_user(frstname, lstname):
 
 # conn = sqlite3.connect(db_file)
 # c = conn.cursor()
-# c.execute("SELECT * FROM workouts")
+# c.execute("SELECT * FROM users")
 # rows = c.fetchall()
 # for row in rows:
 #     print(row)
-query_user('Esmicl', 'Canet')
+# print(get_key('ecanet', "1234"))

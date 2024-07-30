@@ -291,7 +291,7 @@ def log_workout(name):
     try:
         workouts = json_to_list(workouts)
     except:
-        print("Hey")
+        pass
     if workouts == -1:
         click.echo("ERROR: No Workout was found, please check name inputted")
     else:
@@ -305,25 +305,39 @@ def log_workout(name):
         weight = click.prompt("Enter amount of weight", value_proc=validate_digit)
         toAdd.sets = sets
         toAdd.weight = weight
-        fname = click.prompt("Enter your first name")
-        lname = click.prompt("Enter your last name")
-        user_id = get_key(fname,lname)
+        user = click.prompt("Enter your username")
+        passw = click.prompt("Enter your password", hide_input=True)
+        user_id = get_key(user,passw)
+        correct = True
         if user_id == -1:
-            cont = click.prompt(f"No user was found with those parameters. Would you like to create a user acount as {fname} {lname}? (y/n)", value_proc=validate_y_or_n)
+            cont = click.prompt(f"No user was found with those parameters. Would you like to create an account? (y/n)", value_proc=validate_y_or_n)
             if cont == 'y':
-                add_user(fname,lname)
-                user_id = get_key(fname,lname)
+                user = click.prompt("Enter a username you'd like to use")
+                cont = False
+                while cont == False:
+                    passw = click.prompt("Enter a password you'd like to use", hide_input=True)
+                    confpassw = click.prompt("Please rewrite passowrd to confirm", hide_input=True)
+                    if passw == confpassw:
+                        cont = True
+                    else:
+                        click.echo("Passwords did not match. Try again.")
+                create_user(user, passw)
+                user_id = get_key(user,passw)
             else:
                 click.echo("Goodbye!")
                 return
         #ADD TO DATABASE
-        add_db(toAdd, user_id)
-        click.echo(f"\nSuccessfully added {toAdd.name} to the database. See you soon {fname}!\n\n")
+        elif user_id == -2:
+            click.echo("Password is incorrect, please try again.")
+            correct = False
+        if correct:
+            add_db(toAdd, user_id)
+            click.echo(f"\nSuccessfully added {toAdd.name} to the database. See you soon {user}!\n\n")
 
 @cli.command() #This is a temporary command, meant to make development easier
 def search_log():
-    fname = click.prompt("Enter the first name")
-    lname = click.prompt("Enter the last name")
+    fname = click.prompt("Enter the username")
+    lname = click.prompt("Enter password", hide_input=True)
     query = query_user(fname,lname)
     if query == -1:
         click.echo("User not found with those parameters, try again")
@@ -333,7 +347,7 @@ def search_log():
 
 
 @cli.command()
-def delete_database():
+def purge():
     purge_db()
 
 
