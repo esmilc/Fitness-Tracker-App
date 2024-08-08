@@ -21,7 +21,7 @@ class Workout:
         self.instructions = instructions
 
 accepted_muscle_groups = ["abdominals", "abductors", "adductors", "biceps", "calves", "chest", "forearms", "glutes",
-                 "hamstrings", "lats", "lower_back", "middle_back", "neck", "quadriceps", "traps", "triceps"]
+                         "hamstrings", "lats", "lower_back", "middle_back", "neck", "quadriceps", "traps", "triceps"]
 accepted_difficulty = ["beginner", "intermediate", "expert"]
 def json_to_list(json):
     toReturn = []
