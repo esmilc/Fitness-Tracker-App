@@ -3,7 +3,7 @@ class Workout:
     def __init__(self): #Removed duration, not needed at the moment, could be used for database
         self.name = None
         self.muscle = None
-        self.diffuculty = None
+        self.difficulty = None
         self.instructions = None
         self.sets = None
         self.weight = None
