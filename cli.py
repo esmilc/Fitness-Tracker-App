@@ -46,7 +46,7 @@ def list_workouts(list_of_workouts):
 
 @click.group()
 def cli():
-    click.echo("\nYou are using vIN_DEVELOPMENT\n")
+    click.echo("\nYou are using v1.0\n")
 
 
 @cli.command()
