@@ -41,12 +41,32 @@ def add_db(workout, userID):
    conn.close()
 
 def purge_db():
+    """
+        This function is used for debugging purposes, it deletes the file that contains the database.
+        If app were deployed, this function would be removed/made not accessible.
+
+        Args:
+            None
+        Returns:
+            Nothing
+    """
+
     if os.path.exists(db_file):
         os.remove(db_file)
         print('DATABASE WAS SUCCESSFULLY DELETED')
 
 
 def user_exist(username):
+    """
+        This function checks if the username passed in exists.
+
+        Args:
+            username (string): The username that will be checked
+
+        Returns:
+            bool: True if the username exists and False if doesn't exist
+    """
+
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
     c.execute('''SELECT COUNT(*) FROM users
@@ -58,6 +78,16 @@ def user_exist(username):
     return count == 1
 
 def create_user(username, password):
+    """
+        This function is used to create a username in the users database.
+
+        Args:
+            username (string): The username the user wishes to use
+            password (string): Password of the account, this will be encrypted with bcrypt
+        Returns:
+            -1 (int): This function will only return -1 if the account already exists, other than that nothing will return
+    """
+
     if user_exist(username):
         return -1
     conn = sqlite3.connect(db_file)
