@@ -138,7 +138,7 @@ def search_workout(name, muscle_group, difficulty):
             instructions = False
             return
 
-        difficulty =click.prompt("Enter difficulty of workout wanted ").lower()
+        difficulty =click.prompt(f"Enter difficulty of workout wanted ({accepted_difficulty[0]}, {accepted_difficulty[1]}, {accepted_difficulty[2]})").lower()
         if difficulty not in accepted_difficulty:
             click.echo("Difficulty not valid...Please see following list of difficulties and try again.\n")
             for i in accepted_difficulty:
@@ -251,7 +251,7 @@ def search_workout(name, muscle_group, difficulty):
                 instructions = False
                 return
 
-            difficulty = click.prompt("Enter difficulty of workout wanted ").lower()
+            difficulty =click.prompt(f"Enter difficulty of workout wanted ({accepted_difficulty[0]}, {accepted_difficulty[1]}, {accepted_difficulty[2]})").lower()
             if difficulty not in accepted_difficulty:
                 click.echo("Difficulty not valid...Please see following list of difficulties and try again.\n")
                 for i in accepted_difficulty:
